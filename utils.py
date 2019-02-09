@@ -45,3 +45,7 @@ def write_checksum(write):
 	for tmp in write:
 		f.write(tmp)
 		f.write('\n')
+
+def read_checksum(file_name):
+	lines = [line.rstrip('\n') for line in open(file_name)]
+	return lines
