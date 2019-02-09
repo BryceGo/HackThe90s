@@ -29,7 +29,10 @@ def ftpUpload(fileName):
     ftp = ftplib.FTP('')
     ftp.connect(keys.IP_ADDRESS_CLIENT,keys.PORT)
     ftp.login(keys.USER[0],keys.PASSWORD[0])
-    ftp.storbinary('STOR '+fileName,open(fileName,'rb'))
+
+    for file in fileName:
+        ftp.storbinary('STOR '+file,open(file,'rb'))
+
     ftp.quit()
     return
 
@@ -37,5 +40,16 @@ def ftpDownload(fileName):
     ftp = ftplib.FTP('')
     ftp.connect(keys.IP_ADDRESS_CLIENT,keys.PORT)
     ftp.login(keys.USER[1],keys.PASSWORD[1])
-    ftp.retrbinary('RETR ' + fileName, open(fileName,'wb').write)
+
+    for file in fileName:
+        ftp.retrbinary('RETR ' + file, open(file,'wb').write)
+    ftp.quit()
+
+def ftpDelete(fileName):
+    ftp = ftplib.FTP('')
+    ftp.connect(keys.IP_ADDRESS_CLIENT,keys.PORT)
+    ftp.login(keys.USER[0],keys.PASSWORD[0])
+
+    for i in fileName:
+        ftp.delete(i)
     ftp.quit()
