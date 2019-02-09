@@ -8,7 +8,7 @@ class serverCommands():
         self.total_rem_size = 0
         self.total_size = 1000000000    # Total size provided is 1 GB
 
-    def calculate_size(self, start_path):
+    def calculate_size_of_folder(self, start_path):
         os.chdir(start_path)
         for root, dirs, files in os.walk(".", topdown=False):
             for name in files:
@@ -16,20 +16,20 @@ class serverCommands():
 
     # Used size methods
     def get_size_in_kb(self, start_path):
-        self.calculate_size(start_path)
+        self.calculate_size_of_folder(start_path)
         return self.total_used_size
 
     def get_size_in_mb(self, start_path):
-        self.calculate_size(start_path)
+        self.calculate_size_of_folder(start_path)
         return self.total_used_size / 1000000
 
     def get_size_in_gb(self, start_path):
-        self.calculate_size(start_path)
+        self.calculate_size_of_folder(start_path)
         return self.total_used_size / 1000000000
 
     # Remaining size methods
     def get_rem_size_in_kb(self, start_path):
-        self.calculate_size(start_path)
+        self.calculate_size_of_folder(start_path)
         self.total_rem_size = self.total_size - self.total_used_size
         return self.total_size - self.total_used_size
 

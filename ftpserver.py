@@ -3,6 +3,8 @@ from pyftpdlib.servers import FTPServer
 from pyftpdlib.authorizers import DummyAuthorizer
 import keys as keys
 import ftplib
+import time
+import os
 
 class serverHandler(FTPHandler):
 
@@ -25,24 +27,46 @@ def ftpserver():
     server = FTPServer((keys.IP_ADDRESS_SERVER,keys.PORT),handler)
     server.serve_forever()
 
-def ftpUpload(fileName):
+def ftpUpload(fileName, save):
+    upload_start_time = time.time()
     ftp = ftplib.FTP('')
     ftp.connect(keys.IP_ADDRESS_CLIENT,keys.PORT)
     ftp.login(keys.USER[0],keys.PASSWORD[0])
-
+    transfer_size = 0
+    # Get size of data being uploaded
     for file in fileName:
+        transfer_size += os.path.getsize(file)
         ftp.storbinary('STOR '+file,open(file,'rb'))
 
     ftp.quit()
+    upload_end_time = time.time()
+    upload_time = upload_end_time - upload_start_time
+
+    # Upload speed in megabytes per second
+    upload_speed = (transfer_size / 1000000) / upload_time
+
+    save.save_upload_speed(upload_speed)
     return
 
-def ftpDownload(fileName):
+def ftpDownload(fileName, save):
+    download_start_time = time.time()
     ftp = ftplib.FTP('')
     ftp.connect(keys.IP_ADDRESS_CLIENT,keys.PORT)
     ftp.login(keys.USER[1],keys.PASSWORD[1])
+    transfer_size = 0
 
     for file in fileName:
+        transfer_size += os.path.getsize(file)
         ftp.retrbinary('RETR ' + file, open(file,'wb').write)
+
+    download_end_time = time.time()
+    download_time = download_end_time - download_start_time
+
+    # Upload speed in megabytes per second
+    download_speed = (transfer_size / 1000000) / download_time
+
+    save.save_download_speed(download_speed)
+
     ftp.quit()
 
 def ftpDelete(fileName):
