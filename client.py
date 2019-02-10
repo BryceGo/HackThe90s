@@ -1,11 +1,15 @@
 import ftpserver
+import serverCommunication
+from pyfiglet import Figlet
 import utils
 import keys
 import os
 
+from PyInquirer import prompt, print_json
+from examples import custom_style_1
 
 save = utils.save_methods()
-
+serverCom = serverCommunication.serverCommands()
 def check_files(filenames, hashes, start):
     if start == True:
         ftpserver.ftpDownload(keys.SERVER_DIR[0], save)
@@ -24,9 +28,7 @@ def check_files(filenames, hashes, start):
                 if f[filenames[i]] != hashes[i]:
                     ftpserver.ftpUpload(filenames[i])
             except:
-                ftpserver.ftpUpload(filenames[i])        
-
-
+                ftpserver.ftpUpload(filenames[i])
 
 def parse_client_checksum():
     returnVar = {}
@@ -45,6 +47,29 @@ def main():
 
         if start == True:
             start = False
+
+def NAS_display():
+    while True:
+        print("[1] Display remaining storage")
+        print("[2] Display CPU usage")
+        print("[3] Exit")
+        n = raw_input()
+        if (n == 1):
+            print("[1] Display in KiloBytes")
+            print("[2] Display in MegaBytes")
+            print("[3] Display in GigaBytes")
+            print("[4] Exit")
+            m = raw_input()
+            if m == 1:
+                print(serverCom.get_rem_size_in_kb)
+
+
+
+def NAS_monitor():
+    f = Figlet(font='slant')
+    print (f.renderText('Hack The 90s'))
+    NAS_display()
+
 
 if __name__ == '__main__':
     main()
