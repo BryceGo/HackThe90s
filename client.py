@@ -1,37 +1,50 @@
+import ftpserver
+import utils
+import keys
 import os
-import hashlib
 
-class client():
 
-    def __init__(self):
-        self.digests = []
+save = utils.save_methods()
 
-    def comparefile(self):
-        md5_file1 = hashlib.md5(open('clientfile.txt', 'rb').read()).hexdigest()
-        md5_file2 = hashlib.md5(open('serverfile.txt', 'rb').read()).hexdigest()
+def check_files(filenames, hashes, start):
+    if start == True:
+        ftpserver.ftpDownload(keys.SERVER_DIR[0], save)
+        f = parse_client_checksum()
+        for i in range(0,len(filenames)):
+            try:
+                if f[filenames[i]] != hashes[i]:
+                    ftpserver.ftpDownload(filenames[i], filenames[i])
+            except:
+                os.remove(f[filenames[i]])
+    else:
+        ftpserver.ftpDownload(keys.SERVER_DIR[0], save)
+        f = parse_client_checksum()
+        for i in range(0,len(filenames)):
+            try:
+                if f[filenames[i]] != hashes[i]:
+                    ftpserver.ftpUpload(filenames[i])
+            except:
+                ftpserver.ftpUpload(filenames[i])        
 
-        self.digests.append(md5_file1)
-        self.digests.append(md5_file2)
 
-        self.create_checksum_file()
-        self.output_file_changes()
 
-    def output_file_changes(self):
-        if self.digests[0] == self.digests[1]:
-            print('Same checksum')
-            print('Checksum 1', self.digests[0])
-            print('Checksum 2', self.digests[1])
-        else:
-            print('Different checksum')
-            print('Checksum 1', self.digests[0])
-            print('Checksum 2', self.digests[1])
+def parse_client_checksum():
+    returnVar = {}
+    tmp = utils.read_checksum(keys.SERVER_DIR[0] + "/.client_checksum")
+    for i in range(0, len(tmp)):
+        d = tmp.split(' ', 1)
+        returnVar[d[0]] = d[1]
+    return returnVar
 
-    def create_checksum_file(self):
-        f = open(".client_checksum", "w+")
-        f.write('Checksum client')
-        f.write(self.digests[0])
-        f.write('\n')
-        f.write('Checksum server')
-        f.write(self.digests[1])
-        f.write('\n')
-        # should be ready to upload
+def main():
+    start = True
+    while True:
+        filenames = utils.grab_all_files(keys.SERVER_DIR[0])
+        hashes = utils.create_hashes(filenames)
+        check_files(filenames,hashes, start)
+
+        if start == True:
+            start = False
+
+if __name__ == '__main__':
+    main()
