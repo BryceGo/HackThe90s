@@ -133,4 +133,5 @@ def NAS_monitor():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    NAS_monitor()
