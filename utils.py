@@ -1,6 +1,7 @@
 import os
 import hashlib
 import shutil
+import psutil
 
 class save_methods():
 	def __init__(self):
@@ -18,6 +19,9 @@ class save_methods():
 
 	def get_upload_speed(self):
 		return self.upload_speed_save
+
+def get_cpu_usage_pct():
+	return psutil.cpu_percent()
 
 def grab_all_files(path='.'):
 	file_list = []

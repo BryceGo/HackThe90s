@@ -5,6 +5,8 @@ import keys as keys
 import ftplib
 import time
 import os
+import smtp
+import serverCommunication
 
 class serverHandler(FTPHandler):
 
@@ -27,7 +29,7 @@ def ftpserver():
     server = FTPServer((keys.IP_ADDRESS_SERVER,keys.PORT),handler)
     server.serve_forever()
 
-def ftpUpload(fileName, save):
+def ftpUpload(fileName, save, serverComm):
     upload_start_time = time.time()
     ftp = ftplib.FTP('')
     ftp.connect(keys.IP_ADDRESS_CLIENT,keys.PORT)
@@ -46,6 +48,10 @@ def ftpUpload(fileName, save):
     upload_speed = (transfer_size / 1000000) / upload_time
 
     save.save_upload_speed(upload_speed)
+    rem_storage_percent = serverComm.get_rem_percentage("./")
+    if rem_storage_percent > 85:
+        smtp.send("VBAC NAS Storage Message", "Your VBAC NAS unit is currently at %s percent used."
+                  % rem_storage_percent)
     return
 
 def ftpDownload(fileName, save):
