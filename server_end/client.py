@@ -3,25 +3,21 @@ import utils
 import keys
 import os
 import time
-import serverCommunication
 
 
 save = utils.save_methods()
-server_coms = serverCommunication.serverCommands()
 
 def check_files(filenames, hashes, start):
     if start == True:
-        ftpserver.ftpDownload(keys.SERVER_DIR[1] + "/.client_checksum", save)
+        ftpserver.ftpDownload(".client_checksum", save)
         f = parse_client_checksum()
-        print(f)
-        print(filenames)
         for i in range(0,len(filenames)):
             try:
                 if f[filenames[i]] != hashes[i]:
                     ftpserver.ftpDownload(filenames[i], save)
             except Exception as e:
-                pass
-                # os.remove(f[filenames[i]])
+                raise e
+                os.remove(f[filenames[i]])
         client_hash = turn_dict(filenames, hashes)
         d = [i for i in f.keys()]
 
@@ -29,22 +25,16 @@ def check_files(filenames, hashes, start):
             try:
                 _ = client_hash[i]
             except:
-                try:
-                    ftpserver.ftpDownload(i, save)
-                except:
-                    pass
+                ftpserver.ftpDownload(i, save)
     else:
         ftpserver.ftpDownload(".client_checksum", save)
         f = parse_client_checksum()
         for i in range(0,len(filenames)):
             try:
                 if f[filenames[i]] != hashes[i]:
-                    ftpserver.ftpUpload(filenames[i], save, server_coms)
-            except Exception as e:
-                try:
-                    ftpserver.ftpUpload(filenames[i], save, server_coms)
-                except:
-                    pass
+                    ftpserver.ftpUpload(filenames[i])
+            except:
+                ftpserver.ftpUpload(filenames[i])    
         client_hash = turn_dict(filenames, hashes)
         d = [i for i in f.keys()]
 
@@ -52,10 +42,7 @@ def check_files(filenames, hashes, start):
             try:
                 _ = client_hash[i]
             except:
-                try:
-                    ftpserver.ftpDelete(i)
-                except:
-                    pass
+                ftpserver.ftpDelete(i)    
 
 
 def turn_dict(filenames, hashes):
@@ -68,7 +55,6 @@ def turn_dict(filenames, hashes):
 def parse_client_checksum():
     returnVar = {}
     tmp = utils.read_checksum(keys.SERVER_DIR[0] + "/.client_checksum")
-    print(tmp)
     for i in range(0, len(tmp)):
         d = tmp[i].split(' ', 1)
         returnVar[d[0]] = d[1]
