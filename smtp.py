@@ -3,17 +3,18 @@ import smtplib
 server_name = "smtp.gmail.com"
 server_port = 587
 
-client_email = "vleon@sfu.ca"
-client_password = ""
+client_email = "vbacnas@gmail.com"
+client_password = "vbac1997"
+destination_email = "vleon@sfu.ca"
 
 
 def send(email_subject, email_body): #Sends the message
     try:
-        conn = smtplib.SMTP(server_name,server_port)
+        conn = smtplib.SMTP(server_name, server_port)
         conn.ehlo()
         conn.starttls()
         conn.login(client_email, client_password)
-        conn.sendmail(client_email, client_password, 'Subject:' + email_subject + '\n\n' + email_body)
+        conn.sendmail(client_email, destination_email, 'Subject:' + email_subject + '\n\n' + email_body)
         conn.quit()
         print('Success')
     except smtplib.SMTPServerDisconnected:
