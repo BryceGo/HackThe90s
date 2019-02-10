@@ -49,7 +49,8 @@ def ftpUpload(fileName, save, serverComm):
 
     save.save_upload_speed(upload_speed)
     rem_storage_percent = serverComm.get_rem_percentage("./")
-    if rem_storage_percent > 85:
+    print(rem_storage_percent)
+    if rem_storage_percent < 15:
         smtp.send("VBAC NAS Storage Message", "Your VBAC NAS unit is currently at %s percent used."
                   % rem_storage_percent)
     return
