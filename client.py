@@ -119,6 +119,11 @@ def NAS_display():
             testing.test_full_storage()
         elif int(n) == 4:
             alive = False
+        elif int(n) == 5:
+            utils.local_delete("test.txt")
+        elif int(n) == 6:
+            utils.local_undo_delete("test.txt")
+
 
 
 def NAS_monitor():
