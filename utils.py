@@ -37,15 +37,15 @@ def create_hashes(file_list):
 			buf = f.read()
 			hasher.update(buf)
 			a = hasher.hexdigest()
-			checksum_list.append(a)
+			checksum_list.append(filename + " " + a)
 	return checksum_list
 
-def write_checksum(write):
-	f = open(".client_checksum", "w+")
+def write_checksum(write, checksum_name):
+	f = open("." + checksum_name, "w+")
 	for tmp in write:
 		f.write(tmp)
 		f.write('\n')
 
-def read_checksum(file_name):
-	lines = [line.rstrip('\n') for line in open(file_name)]
+def read_checksum(filename):
+	lines = [line.rstrip('\n') for line in open(filename)]
 	return lines
