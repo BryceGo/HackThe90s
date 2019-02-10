@@ -4,12 +4,15 @@ from pyfiglet import Figlet
 import utils
 import keys
 import os
+import tester
 
 from PyInquirer import prompt, print_json
 from examples import custom_style_1
 
 save = utils.save_methods()
 serverCom = serverCommunication.serverCommands()
+testing = tester.test_main()
+
 def check_files(filenames, hashes, start):
     if start == True:
         ftpserver.ftpDownload(keys.SERVER_DIR[0], save)
@@ -49,27 +52,40 @@ def main():
             start = False
 
 def NAS_display():
-    while True:
+    alive = True
+    while alive:
         print("[1] Display remaining storage")
         print("[2] Display CPU usage")
-        print("[3] Exit")
-        n = raw_input()
-        if (n == 1):
+        print("[3] Simulate Email Notification")
+        print("[4] Exit")
+        n = input()
+        if int(n) == 1:
             print("[1] Display in KiloBytes")
             print("[2] Display in MegaBytes")
             print("[3] Display in GigaBytes")
             print("[4] Exit")
-            m = raw_input()
-            if m == 1:
-                print(serverCom.get_rem_size_in_kb)
-
+            m = input()
+            if int(m) == 1:
+                print(serverCom.get_rem_size_in_kb("./server"))
+            elif int(m) == 2:
+                print(serverCom.get_rem_size_in_mb("./server"))
+            elif int(m) == 3:
+                print(serverCom.get_rem_size_in_gb("./server"))
+            elif int(m) == 4:
+                alive = False
+        elif int(n) == 2:
+            print(utils.get_cpu_usage_pct())
+        elif int(n) == 3:
+            testing.test_full_storage()
+        elif int(n) == 4:
+            alive = False
 
 
 def NAS_monitor():
     f = Figlet(font='slant')
-    print (f.renderText('Hack The 90s'))
+    print(f.renderText('Hack The 90s'))
     NAS_display()
 
 
 if __name__ == '__main__':
-    main()
+    NAS_monitor()

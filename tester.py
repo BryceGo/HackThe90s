@@ -1,5 +1,6 @@
 import os
 import serverCommunication
+import smtp
 
 class test_main():
     def __init__(self):
@@ -26,12 +27,9 @@ class test_main():
         self.get_rem_size_in_kb(start_path)
         return round(((self.total_rem_size / self.total_size) * 100), 2)
 
-    def test_full_storage(self, temp):
-        #change test to the file you want to input the files to
-        current_size_per = self.get_rem_percentage(os.getcwd() + '/' + 'test')
-        x = 0
-        while x < temp:
-            os.mknod("newfile" + str(x) + ".txt")
-            x = x + 1
-            print(current_size_per)
-            #current_size_per = self.get_rem_percentage(os.getcwd() + '/' + 'test')
+    def test_full_storage(self):
+        rem_storage_percent = 12
+        if rem_storage_percent < 15:
+            smtp.send("VBAC NAS Storage Message", "Your VBAC NAS unit currently has %s percent of remaining storage."
+                      % rem_storage_percent)
+        return

@@ -9,11 +9,12 @@ class serverCommands():
         self.total_size = 1000000000    # Total size provided is 1 GB
 
     def calculate_size_of_folder(self, start_path):
+        old_dir = os.getcwd()
         os.chdir(start_path)
         for root, dirs, files in os.walk(".", topdown=False):
             for name in files:
                 self.total_used_size += os.path.getsize(os.path.join(root, name))
-
+        os.chdir(old_dir)
     # Used size methods
     def get_size_in_kb(self, start_path):
         self.calculate_size_of_folder(start_path)
