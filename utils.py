@@ -24,6 +24,8 @@ def grab_all_files(path='.'):
 	d = [ i for i in os.walk(path)]
 	for i in d:
 		for j in i[2]:
+			if j == ".client_checksum":
+				continue
 			file_list.append(i[0] + "/" +j)
 	return file_list
 
@@ -41,10 +43,11 @@ def create_hashes(file_list):
 	return checksum_list
 
 def write_checksum(write, checksum_name):
-	f = open("." + checksum_name, "w+")
+	f = open(checksum_name, "w+")
 	for tmp in write:
 		f.write(tmp)
 		f.write('\n')
+	f.close()
 
 def read_checksum(filename):
 	lines = [line.rstrip('\n') for line in open(filename)]
